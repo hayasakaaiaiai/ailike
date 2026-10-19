@@ -56,35 +56,29 @@ function logoImg(key) {
   return `<img class="pixel-logo logo-small${LOGOS[key].mono ? " mono" : ""}" src="${LOGOS[key].src}" alt="" draggable="false">`;
 }
 
-// 所有 3D logo 共用一个动画循环：平时自己匀速转，也可以按住拖着转、甩一下
+// 首页和结果页共用同一转速；拖拽松手后立即恢复匀速。
 const REDUCE_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const MAX_FLING = 1500; // 甩出去的最大角速度（度/秒）
+const LOGO_SPIN_SPEED = 45; // 度/秒，一圈 8 秒
 let spinners = [];
 
-function registerSpinners(root, speed) {
+function registerSpinners(root) {
   spinners = spinners.filter((s) => s.el.isConnected);
-  root.querySelectorAll(".logo3d").forEach((box, i) => {
-    const base = REDUCE_MOTION ? 0 : speed;
-    const s = { el: box.firstElementChild, angle: REDUCE_MOTION ? 0 : i * 40, tilt: 0, base, vel: base, drag: null };
+  root.querySelectorAll(".logo3d").forEach((box) => {
+    const s = { el: box.firstElementChild, angle: 0, tilt: 0, drag: null };
 
     box.addEventListener("pointerdown", (e) => {
-      s.drag = { x: e.clientX, y: e.clientY, t: e.timeStamp };
-      s.vel = 0;
+      s.drag = { x: e.clientX, y: e.clientY };
       box.setPointerCapture(e.pointerId);
     });
     box.addEventListener("pointermove", (e) => {
       if (!s.drag) return;
       const dx = e.clientX - s.drag.x;
       const dy = e.clientY - s.drag.y;
-      const dt = Math.max(1, e.timeStamp - s.drag.t) / 1000;
       s.angle += dx * 0.9;
       s.tilt = Math.max(-35, Math.min(35, s.tilt - dy * 0.5));
-      s.vel = Math.max(-MAX_FLING, Math.min(MAX_FLING, (dx * 0.9) / dt));
-      s.drag = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+      s.drag = { x: e.clientX, y: e.clientY };
     });
-    const release = (e) => {
-      // 停住一会儿再松手就不算甩
-      if (s.drag && e.timeStamp - s.drag.t > 80) s.vel = 0;
+    const release = () => {
       s.drag = null;
     };
     box.addEventListener("pointerup", release);
@@ -100,8 +94,7 @@ function tick(now) {
   lastTick = now;
   for (const s of spinners) {
     if (!s.drag) {
-      s.angle = (s.angle + s.vel * dt) % 360;
-      s.vel += (s.base - s.vel) * Math.min(1, dt * 1.5); // 甩完慢慢回到匀速
+      s.angle = (s.angle + (REDUCE_MOTION ? 0 : LOGO_SPIN_SPEED) * dt) % 360;
       s.tilt *= 1 - Math.min(1, dt * 3);
     }
     s.el.style.transform = `rotateX(${s.tilt}deg) rotateY(${s.angle}deg)`;
@@ -115,7 +108,7 @@ function renderStart() {
       ${logo3d(k, LOGO_GRID * 2)}
       <span>${esc(AIS[k].name)}</span>
     </li>`).join("");
-  registerSpinners($("ai-chips"), 45);
+  registerSpinners($("ai-chips"));
 }
 
 function startQuiz() {
@@ -236,7 +229,7 @@ function renderResult() {
 
   $("screen-result").style.setProperty("--ai", `var(--ai-${topKey})`);
   $("result-logo").innerHTML = logo3d(topKey, LOGO_GRID * 4);
-  registerSpinners($("result-logo"), 70);
+  registerSpinners($("result-logo"));
   $("result-name").textContent = top.name;
   $("result-title").textContent = `「${top.title}」`;
   $("result-catchphrase").textContent = `“${top.catchphrase}”`;
