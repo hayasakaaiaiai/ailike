@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>测测你最像哪个 AI</title>
+  <meta name="description" content="6 道题，6 个维度，测测你最像 ChatGPT、Claude、Gemini、Grok、DeepSeek 还是豆包。">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#151412" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:title" content="测测你最像哪个 AI · 赛博机格测试">
+  <meta property="og:description" content="6 道题，6 个维度，约 1 分钟。发现你的 AI 人设，看看谁才是你的赛博搭子。">
+  <meta property="og:url" content="https://hayasakaaiaiai.github.io/ailike/">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://hayasakaaiaiai.github.io/ailike/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="screen active" id="screen-start">
+      <div class="hero">
+        <p class="eyebrow">赛博机格测试</p>
+        <h1 id="home-title" tabindex="-1">测测你最像<br><span class="marker">哪个 AI</span></h1>
+        <p class="hero-note">6 道题 · 6 个维度 · 约 1 分钟</p>
+        <ul class="ai-chips" id="ai-chips"></ul>
+        <button class="btn btn-primary btn-start" id="start-btn">开始测试</button>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-quiz">
+      <div class="quiz-top">
+        <button class="btn-ghost" id="back-btn">← 上一题</button>
+        <span class="quiz-step" id="quiz-step"></span>
+      </div>
+      <div class="progress" id="quiz-progress-track" role="progressbar" aria-label="答题进度" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><div class="progress-fill" id="quiz-progress"></div></div>
+      <div class="quiz-card" id="quiz-card">
+        <p class="dimension" id="quiz-dimension"></p>
+        <h2 class="question" id="quiz-question" tabindex="-1"></h2>
+        <div class="options" id="quiz-options"></div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-result">
+      <article class="result-card">
+        <p class="eyebrow">你最像</p>
+        <div class="result-logo" id="result-logo"></div>
+        <p class="drag-hint">按住拖动，可以转它</p>
+        <h1 class="result-name" id="result-name" tabindex="-1"></h1>
+        <p class="result-title" id="result-title"></p>
+        <p class="catchphrase" id="result-catchphrase"></p>
+        <p class="result-desc" id="result-desc"></p>
+        <div class="tags" id="result-tags"></div>
+        <dl class="relations">
+          <div><dt>最佳搭子</dt><dd id="result-buddy"></dd></div>
+          <div><dt>天敌</dt><dd id="result-nemesis"></dd></div>
+        </dl>
+      </article>
+
+      <section class="panel">
+        <h2>六维度报告</h2>
+        <ul class="dimensions" id="result-dimensions"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>你和每个 AI 的相似度</h2>
+        <ul class="bars" id="result-bars"></ul>
+      </section>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="share-btn" aria-live="polite">复制分享文案</button>
+        <button class="btn btn-secondary" id="restart-btn">再测一次</button>
+      </div>
+    </section>
+  </main>
+
+  <noscript><p class="noscript-note">这个趣味测试需要 JavaScript。请在浏览器中启用 JavaScript，然后刷新页面开始测试。</p></noscript>
+
+  <footer class="footer">梗来自网友调侃，纯属娱乐，不代表任何产品的真实表现。Logo 版权归各公司所有。</footer>
+
+  <script src="data.js"></script>
+  <script src="logos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
